@@ -36,7 +36,8 @@
 	function Circle(cx, cy, html_id)
 	{
 		var html_id = html_id;
-		this.info = { cx: cx,  cy: cy, r:  10+time_pressed/10 };
+		var r=10+time_pressed/10 
+		this.info = { cx: cx,  cy: cy, r: r };
 		this.id=html_id;
 		
 		//private function that generates a random number
@@ -111,9 +112,13 @@
 				{
 					if(circles[circle] != circles[circle2]){
 						if( Math.abs(circles[circle].info.cx - circles[circle2].info.cx) < circles[circle].info.r+circles[circle2].info.r && Math.abs(circles[circle].info.cy - circles[circle2].info.cy) < circles[circle].info.r+circles[circle2].info.r){
-							document.getElementById(circles[circle].id).remove();
+							var newradius = parseInt(document.getElementById(circles[circle].id).getAttribute('r'))+parseInt(document.getElementById(circles[circle2].id).getAttribute('r'));
+							circles[circle].r= newradius;
+							circles[circle].info.r= newradius;
+							console.log(newradius);
+							document.getElementById(circles[circle].id).setAttribute('r',newradius);
 							document.getElementById(circles[circle2].id).remove();
-							delete circles[circle];
+							
 							delete circles[circle2];
 						}
 					}
