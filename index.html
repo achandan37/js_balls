@@ -11,10 +11,32 @@
 	var height=document.body.clientHeight;
 	document.getElementById("svg").setAttribute('width',width);
 	document.getElementById("svg").setAttribute('height',height);
+	var time_pressed=0;
+	( function(){
+
+		var mousedown_time;
+
+		function getTime(){
+			var date = new Date();
+			return date.getTime();
+		}
+
+		document.onmousedown = function(e){
+			mousedown_time = getTime();
+		}
+		document.onmouseup = function(e){
+			time_pressed = getTime() - mousedown_time;
+			console.log('You held your mouse down for', time_pressed, 'miliseconds.');
+		}
+
+	})();
+
+
+
 	function Circle(cx, cy, html_id)
 	{
 		var html_id = html_id;
-		this.info = { cx: cx,  cy: cy };
+		this.info = { cx: cx,  cy: cy, r:  10+time_pressed/10 };
 		
 		//private function that generates a random number
 		var randomNumberBetween = function(min, max){
@@ -32,7 +54,7 @@
 			var circle = makeSVG('circle', 
 				{ 	cx: this.info.cx,
 				  	cy: this.info.cy,
-				  	r:  10,
+				  	r:  this.info.r,
 				  	id: html_id,
 				  	style: "fill: black"
 				});
@@ -44,11 +66,11 @@
 			var el = document.getElementById(html_id);
 
 			//see if the circle is going outside the browser. if it is, reverse the velocity
-			if( this.info.cx > document.body.clientWidth-20 || this.info.cx < 10)
+			if( this.info.cx > document.body.clientWidth-this.info.r-10 || this.info.cx < this.info.r)
 			{
 				this.info.velocity.x = this.info.velocity.x * -1;
 			}
-			if( this.info.cy > document.body.clientHeight-20 || this.info.cy < 10)
+			if( this.info.cy > document.body.clientHeight-this.info.r-10 || this.info.cy < this.info.r)
 			{
 				this.info.velocity.y = this.info.velocity.y * -1;
 			}
