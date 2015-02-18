@@ -37,6 +37,7 @@
 	{
 		var html_id = html_id;
 		this.info = { cx: cx,  cy: cy, r:  10+time_pressed/10 };
+		this.id=html_id;
 		
 		//private function that generates a random number
 		var randomNumberBetween = function(min, max){
@@ -70,7 +71,7 @@
 			{
 				this.info.velocity.x = this.info.velocity.x * -1;
 			}
-			if( this.info.cy > document.body.clientHeight-this.info.r-10 || this.info.cy < this.info.r)
+			if( this.info.cy > document.body.clientHeight-this.info.r-10 || this.info.cy < this.info.r+10)
 			{
 				this.info.velocity.y = this.info.velocity.y * -1;
 			}
@@ -105,8 +106,22 @@
 			for(circle in circles)
 			{
 				circles[circle].update(1);
+
+				for(circle2 in circles)
+				{
+					if(circles[circle] != circles[circle2]){
+						if( Math.abs(circles[circle].info.cx - circles[circle2].info.cx) < circles[circle].info.r+circles[circle2].info.r && Math.abs(circles[circle].info.cy - circles[circle2].info.cy) < circles[circle].info.r+circles[circle2].info.r){
+							document.getElementById(circles[circle].id).remove();
+							document.getElementById(circles[circle2].id).remove();
+							delete circles[circle];
+							delete circles[circle2];
+						}
+					}
+				}
 			}
 		}
+
+		
 
 		this.createNewCircle = function(x,y){
 			var new_circle = new Circle(x,y,counter++);
@@ -120,6 +135,7 @@
 
 	var playground = new PlayGround();
 	setInterval(playground.loop, 15);
+	// setInterval(playground.collision, 15);
 
 	document.onclick = function(e) {
 		playground.createNewCircle(e.x,e.y);
